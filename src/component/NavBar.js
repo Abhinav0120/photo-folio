@@ -8,12 +8,12 @@ function NavBar(){
         alignItems: "center",
         gap: "10px"
     }
-
+    
     const Logo = {
         height: "70%",
         marginLeft: "50px",
     }
-
+    
     const LogoText ={
         fontSize: "1.5rem",
         fontWeight: "700"
