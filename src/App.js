@@ -1,14 +1,16 @@
 import './App.css';
 import NavBar from './component/NavBar';
 import AlbumsList from './component/AlbumsList';
+import ImageList from './component/ImageList';
 
 import { db } from './firebaseInit';
 import { useState, useRef, useEffect } from "react";
-import { collection, addDoc, getDocs, onSnapshot } from 'firebase/firestore';
+import { collection, addDoc, getDocs, onSnapshot, updateDoc, doc , arrayUnion } from 'firebase/firestore';
 
 
 function App(){
   const [albums, setAlbums] =  useState([]);
+  // const [visibleAlbum, setVisibleAlbum] = useState(null);
 
   const getData = async () => {
     const unsub = onSnapshot(collection(db,"albums"), (snapShot)=>{
@@ -20,16 +22,7 @@ function App(){
       })
       setAlbums(albums);
       console.log(albums);
-    })
-
-    // const snapshot = await getDocs(collection(db, "albums"));
-    // const albums = snapshot.docs.map((doc) => ({
-    //   id: doc.id,
-    //   ...doc.data()
-    // }));
-    // setAlbums(albums);
-    
-    
+    })    
   };
 
   useEffect(() => {
@@ -46,13 +39,30 @@ function App(){
     // console.log(albums);
   };
 
+  // const updateAlbum = async (updateAlbum)=>{
+  //   const albumRef = doc(db, "albums", updateAlbum.id);
+
+  //   // Set the "capital" field of the city 'DC'
+  //   await updateDoc(albumRef, updateAlbum);
+  // }
+
+  const updateAlbum = async (image, id)=>{
+    const albumRef = doc(db, "albums", id);
+
+    // Set the "capital" field of the city 'DC'
+    await updateDoc(albumRef, {
+      imageList: arrayUnion(image)
+    });
+  }
+
   return (
     <div className="App">
       <header className="App-header">
        
       </header>
       <NavBar />
-      <AlbumsList addAlbum={addAlbum} albums={albums}/>
+      <AlbumsList addAlbum={addAlbum} albums={albums} updateAlbum={updateAlbum}/>:
+      
     </div>
   );
 }

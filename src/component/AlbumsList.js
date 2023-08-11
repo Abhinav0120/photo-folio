@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from "react";
+import ImageList from './ImageList';
 
 const AlbumForm = styled.div`
     background-color: #f4f4f4;
@@ -16,7 +17,6 @@ const Heading = styled.span`
     font-size: 1.7rem;
     font-weight: 700;
 `
-
 const FormStyle = styled.form`
     align-items: center;
     display: flex;
@@ -131,8 +131,10 @@ const AlbumName = styled.span`
     transition: .3s;
     width: 100%;
 `
-function AlbumsList({addAlbum, albums}){
+function AlbumsList({addAlbum, albums, updateAlbum}){
     const [isFormVisible, setFormVisible] = useState(false);
+    const [visibleAlbum, setVisibleAlbum] = useState(null);
+
 
     const albumNameInput = useRef();
 
@@ -144,7 +146,8 @@ function AlbumsList({addAlbum, albums}){
         e.preventDefault();
         const AlbumName = albumNameInput.current.value;
         const album = {
-            name: AlbumName
+            name: AlbumName,
+            imageList: []
         };
         addAlbum(album);
         clearInput();
@@ -156,7 +159,19 @@ function AlbumsList({addAlbum, albums}){
         albumNameInput.current.value = "";
     };
     
+    function openAlbum(album){
+        if(visibleAlbum==null){
+            setVisibleAlbum(album);
+        }
+    }
+
+    function closeAlbum(){
+        if(visibleAlbum!=null){
+            setVisibleAlbum(null);
+        }
+    }
     return(
+    visibleAlbum!=null?<ImageList updateAlbum={updateAlbum} visibleAlbum={visibleAlbum} closeAlbum={closeAlbum}/>:
     <>
         {isFormVisible?
             <AlbumForm>
@@ -183,7 +198,7 @@ function AlbumsList({addAlbum, albums}){
             <Albums>
                 {
                     albums.map((album)=>
-                        <Album key={album.id} id={album.id}>
+                        <Album onClick={()=>{openAlbum(album)}} key={album.id} id={album.id}>
                             <Image src='https://cdn-icons-png.flaticon.com/128/7224/7224509.png' alt='image'/>
                             <AlbumName>{album.name}</AlbumName>
                         </Album>
