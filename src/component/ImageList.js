@@ -2,6 +2,10 @@ import styled from "styled-components";
 import {useRef, useState} from "react";
 import { doc, updateDoc, deleteField, deleteDoc, arrayUnion } from "firebase/firestore";
 
+// react toasts
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const ImageListContainer = styled.div`
     margin: 0 auto;
     max-width: 1024px;
@@ -318,12 +322,13 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
 
             // Update the component's state
             // updateAlbum({ ...visibleAlbum, imageList: updatedImageList });
+            toast.success("Image Updated successfully.");
 
             setUpdatingImage(null);
             setFormVisible(false);
         }catch(error){
 
-            console.erro("Error Updating image:", error);
+            console.error("Error Updating image:", error);
         }
 
 
@@ -377,17 +382,26 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
 
         try {
             // Update the album's imageList in the database
+            // const albumRef = doc(db, "albums", visibleAlbum.id);
+            // await updateDoc(albumRef, {
+            //     imageList: updatedImageList
+            // });
+
             const albumRef = doc(db, "albums", visibleAlbum.id);
             await updateDoc(albumRef, {
                 imageList: updatedImageList
             });
 
+            toast.success("Image deleted successfully.");
+
             // Delete the image document from the images collection
-            const imageDocRef = doc(db, "images", imageId);
-            await deleteDoc(imageDocRef);
+            // const imageDocRef = doc(db, "images", imageId);
+            // await deleteDoc(imageDocRef);
 
             // Update the component's state
-            updateAlbum({ ...visibleAlbum, imageList: updatedImageList });
+            // updateAlbum({ ...visibleAlbum, imageList: updatedImageList });
+
+            
         } catch (error) {
             console.error("Error deleting image:", error);
         }

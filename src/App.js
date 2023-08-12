@@ -3,6 +3,11 @@ import NavBar from './component/NavBar';
 import AlbumsList from './component/AlbumsList';
 import ImageList from './component/ImageList';
 
+// react toasts
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 import { db } from './firebaseInit';
 import { useState, useRef, useEffect } from "react";
 import { collection, addDoc, getDocs, onSnapshot, updateDoc, doc , arrayUnion } from 'firebase/firestore';
@@ -35,6 +40,7 @@ function App(){
 
     const newAlbum = { id: docRef.id, ...album };
 
+    toast.success("Album added successfully.");
     // setAlbums([newAlbum, ...albums]);
     // console.log(albums);
   };
@@ -53,10 +59,13 @@ function App(){
     await updateDoc(albumRef, {
       imageList: arrayUnion(image)
     });
+    toast.success("Image added successfully.");
+
   }
 
   return (
     <div className="App">
+      <ToastContainer/>
       <header className="App-header">
        
       </header>
