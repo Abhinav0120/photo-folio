@@ -1,7 +1,6 @@
 import './App.css';
 import NavBar from './component/NavBar';
 import AlbumsList from './component/AlbumsList';
-import ImageList from './component/ImageList';
 
 // react toasts
 import { toast, ToastContainer } from "react-toastify";
@@ -10,18 +9,17 @@ import "react-toastify/dist/ReactToastify.css";
 // react-spinner-material
 import Spinner from 'react-spinner-material';
 
-
+// Imports used
 import { db } from './firebaseInit';
-import { useState, useRef, useEffect } from "react";
-import { collection, addDoc, getDocs, onSnapshot, updateDoc, doc , arrayUnion } from 'firebase/firestore';
+import { useState, useEffect } from "react";
+import { collection, addDoc, onSnapshot, updateDoc, doc , arrayUnion } from 'firebase/firestore';
 
 
 function App(){
   const [albums, setAlbums] =  useState([]);
-  // const [visibleAlbum, setVisibleAlbum] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
+  // Get data function to get data from firestore in Real-Time
   const getData = async () => {
     setLoading(true);
 
@@ -38,6 +36,7 @@ function App(){
     })    
   };
 
+  // Get data on mounting the component
   useEffect(() => {
     getData();
   }, []);
@@ -49,16 +48,8 @@ function App(){
     const newAlbum = { id: docRef.id, ...album };
 
     toast.success("Album added successfully.");
-    // setAlbums([newAlbum, ...albums]);
-    // console.log(albums);
+    
   };
-
-  // const updateAlbum = async (updateAlbum)=>{
-  //   const albumRef = doc(db, "albums", updateAlbum.id);
-
-  //   // Set the "capital" field of the city 'DC'
-  //   await updateDoc(albumRef, updateAlbum);
-  // }
 
   const updateAlbum = async (image, id)=>{
     const albumRef = doc(db, "albums", id);

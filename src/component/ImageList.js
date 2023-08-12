@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import {useRef, useState} from "react";
-import { doc, updateDoc, deleteField, deleteDoc, arrayUnion } from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 
 // react toasts
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Styled Componets
 const ImageListContainer = styled.div`
     margin: 0 auto;
     max-width: 1024px;
@@ -238,10 +239,11 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [updatingImage, setUpdatingImage] = useState(null);
 
-
+    // referenses of form's input elements
     const imageNameInput = useRef();
     const imageUrlInput = useRef();
 
+    // function to show or hide form
      function showHideForm(){
         setFormVisible(!isFormVisible);
         if(updatingImage!=null){
@@ -250,29 +252,7 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
         }
     }
 
-    // function onSubmitHandler(e){
-    //     e.preventDefault();
-    //     const ImageName = imageNameInput.current.value;
-    //     const ImageUrl = imageUrlInput.current.value;
-    //     const image = {
-    //         name: ImageName,
-    //         url: ImageUrl
-    //     };
-    //     let newimageList;
-    //     const imageList = visibleAlbum.imageList;
-    //     if(imageList!=null){
-    //         newimageList = [image, ...imageList];
-    //     }else{
-    //         newimageList = [image];
-    //     }
-        
-    //     const newAlbum = {...visibleAlbum, imageList: newimageList}
-    //     updateAlbum(newAlbum);
-    //     clearInput();
-    //     setFormVisible(false);
-    //     return;
-    // }
-
+    // handling from submit
     function onSubmitHandler(e) {
         e.preventDefault();
         const ImageName = imageNameInput.current.value;
@@ -288,11 +268,13 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
         setFormVisible(false);
       }
 
+    // function to clear forms inputs value
     const clearInput = () => {
         imageNameInput.current.value = "";
         imageUrlInput.current.value = "";
     };
     
+    // function to update image
     async function updateImage(e){
         e.preventDefault();
         const ImageName = imageNameInput.current.value;
@@ -308,8 +290,6 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
             console.error("Image not found in the album.");
         }
 
-       
-
         const updatedImageList = [...visibleAlbum.imageList];
         updatedImageList[imageIndex] = updatedImage;
 
@@ -320,8 +300,6 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
                 imageList: updatedImageList
             });
 
-            // Update the component's state
-            // updateAlbum({ ...visibleAlbum, imageList: updatedImageList });
             toast.success("Image Updated successfully.");
 
             setUpdatingImage(null);
@@ -330,24 +308,15 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
 
             console.error("Error Updating image:", error);
         }
-
-
-
-        // const albumRef = doc(db, "albums", visibleAlbum.id);
-    
-        // // Set the "capital" field of the city 'DC'
-        // await updateDoc(albumRef, {
-        //     // imageList: arrayUnion(image)
-        // });
-
-        
     }
 
+    // setting image to updating state
     function setImageToUpdate(image){
         setUpdatingImage(image);
         setFormVisible(true);
     }
 
+    // to open and show image in caroucel
     function openImage(image){
         if(visibleImage==null){
             const index = visibleAlbum.imageList.findIndex(img => img.id === image.id);
@@ -356,23 +325,26 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
         }
     }
 
+    // go to next image function
     function goToNextImage() {
         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % visibleAlbum.imageList.length);
     }
 
+    // go to previous image function
     function goToPreviousImage() {
         setCurrentImageIndex(prevIndex =>
             prevIndex === 0 ? visibleAlbum.imageList.length - 1 : prevIndex - 1
         );
     }
     
-
+    // Close image function
     function closeImage(){
         if(visibleImage!=null){
             setVisibleimage(null);
         }
     }
 
+    // Delete image from db function
     async function deleteImage(imageId) {
         const imageIndex = visibleAlbum.imageList.findIndex(img => img.id === imageId);
         if (imageIndex === -1) return; // Image not found in the album
@@ -381,12 +353,6 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
         updatedImageList.splice(imageIndex, 1); // Remove the image from the list
 
         try {
-            // Update the album's imageList in the database
-            // const albumRef = doc(db, "albums", visibleAlbum.id);
-            // await updateDoc(albumRef, {
-            //     imageList: updatedImageList
-            // });
-
             const albumRef = doc(db, "albums", visibleAlbum.id);
             await updateDoc(albumRef, {
                 imageList: updatedImageList
@@ -394,18 +360,9 @@ function ImageList({updateAlbum, visibleAlbum, closeAlbum, db}){
 
             toast.success("Image deleted successfully.");
 
-            // Delete the image document from the images collection
-            // const imageDocRef = doc(db, "images", imageId);
-            // await deleteDoc(imageDocRef);
-
-            // Update the component's state
-            // updateAlbum({ ...visibleAlbum, imageList: updatedImageList });
-
-            
         } catch (error) {
             console.error("Error deleting image:", error);
         }
-
     }        
     return(
         <ImageListContainer>

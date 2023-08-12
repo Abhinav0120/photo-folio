@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from "react";
 import ImageList from './ImageList';
 
+// styled Components
 const AlbumForm = styled.div`
     background-color: #f4f4f4;
     border-radius: 10px;
@@ -138,6 +139,7 @@ function AlbumsList({addAlbum, albums, updateAlbum, db}){
 
     const albumNameInput = useRef();
 
+    // to update visibleAlbum whenever album get's upated in the db
     useEffect(()=>{
         if(visibleAlbum!=null){
             const newVisibleAlbum = albums.find((album) => album.id === visibleAlbum?.id);
@@ -145,10 +147,12 @@ function AlbumsList({addAlbum, albums, updateAlbum, db}){
         }
     },[albums])
 
+    // Showing form
     function showHideForm(){
         setFormVisible(!isFormVisible);
     }
     
+    // handling from submit
     function onSubmitHandler(e){
         e.preventDefault();
         const AlbumName = albumNameInput.current.value;
@@ -166,17 +170,20 @@ function AlbumsList({addAlbum, albums, updateAlbum, db}){
         albumNameInput.current.value = "";
     };
     
+    // function to opening album
     function openAlbum(album){
         if(visibleAlbum==null){
             setVisibleAlbum(album);
         }
     }
 
+    // function to close album
     function closeAlbum(){
         if(visibleAlbum!=null){
             setVisibleAlbum(null);
         }
     }
+
     return(
     visibleAlbum!=null?<ImageList updateAlbum={updateAlbum} visibleAlbum={visibleAlbum} closeAlbum={closeAlbum} db={db}/>:
     <>
@@ -199,7 +206,6 @@ function AlbumsList({addAlbum, albums, updateAlbum, db}){
                 {isFormVisible?
                     <CancelButton onClick={showHideForm}>Cancel</CancelButton>:
                     <AddAlbum onClick={showHideForm}>Add album</AddAlbum>
-
                 }
             </AlbumListTop>
             <Albums>
@@ -211,7 +217,6 @@ function AlbumsList({addAlbum, albums, updateAlbum, db}){
                         </Album>
                     )
                 }
-                
             </Albums>
         </AlbumList>
     </>
