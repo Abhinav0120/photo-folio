@@ -7,6 +7,9 @@ import ImageList from './component/ImageList';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// react-spinner-material
+import Spinner from 'react-spinner-material';
+
 
 import { db } from './firebaseInit';
 import { useState, useRef, useEffect } from "react";
@@ -16,8 +19,12 @@ import { collection, addDoc, getDocs, onSnapshot, updateDoc, doc , arrayUnion } 
 function App(){
   const [albums, setAlbums] =  useState([]);
   // const [visibleAlbum, setVisibleAlbum] = useState(null);
+  const [loading, setLoading] = useState(true);
+
 
   const getData = async () => {
+    setLoading(true);
+
     const unsub = onSnapshot(collection(db,"albums"), (snapShot)=>{
       const albums = snapShot.docs.map((doc)=>{
         return{
@@ -26,6 +33,7 @@ function App(){
         }
       })
       setAlbums(albums);
+      setLoading(false); // Data fetching finished, set loading to false
       console.log(albums);
     })    
   };
@@ -70,7 +78,17 @@ function App(){
        
       </header>
       <NavBar />
-      <AlbumsList addAlbum={addAlbum} albums={albums} updateAlbum={updateAlbum} db={db}/>:
+      {loading?
+        <div className="loader-container">
+          <Spinner
+            radius={120}
+            color={"#0077FF"}
+            stroke={5}
+            visible={true}
+          />
+        </div>
+      :<AlbumsList addAlbum={addAlbum} albums={albums} updateAlbum={updateAlbum} db={db}/>
+      }
       
     </div>
   );
