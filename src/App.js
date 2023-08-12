@@ -61,7 +61,7 @@ function App(){
        
       </header>
       <NavBar />
-      <AlbumsList addAlbum={addAlbum} albums={albums} updateAlbum={updateAlbum}/>:
+      <AlbumsList addAlbum={addAlbum} albums={albums} updateAlbum={updateAlbum} db={db}/>:
       
     </div>
   );

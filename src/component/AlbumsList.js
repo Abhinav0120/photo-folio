@@ -131,12 +131,19 @@ const AlbumName = styled.span`
     transition: .3s;
     width: 100%;
 `
-function AlbumsList({addAlbum, albums, updateAlbum}){
+function AlbumsList({addAlbum, albums, updateAlbum, db}){
     const [isFormVisible, setFormVisible] = useState(false);
     const [visibleAlbum, setVisibleAlbum] = useState(null);
 
 
     const albumNameInput = useRef();
+
+    useEffect(()=>{
+        if(visibleAlbum!=null){
+            const newVisibleAlbum = albums.find((album) => album.id === visibleAlbum?.id);
+            setVisibleAlbum(newVisibleAlbum);
+        }
+    },[albums])
 
     function showHideForm(){
         setFormVisible(!isFormVisible);
@@ -171,7 +178,7 @@ function AlbumsList({addAlbum, albums, updateAlbum}){
         }
     }
     return(
-    visibleAlbum!=null?<ImageList updateAlbum={updateAlbum} visibleAlbum={visibleAlbum} closeAlbum={closeAlbum}/>:
+    visibleAlbum!=null?<ImageList updateAlbum={updateAlbum} visibleAlbum={visibleAlbum} closeAlbum={closeAlbum} db={db}/>:
     <>
         {isFormVisible?
             <AlbumForm>
